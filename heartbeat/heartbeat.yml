@@ -22,15 +22,62 @@ heartbeat.config.monitors:
 # Configure monitors inline
 heartbeat.monitors:
 - type: http
-
-  # List or urls to query
+  id: localhost
+  name: localhost
   urls: ["http://localhost:9200"]
-
-  # Configure task schedule
   schedule: '@every 10s'
-
-  # Total test connection and data exchange timeout
-  #timeout: 16s
+- type: http
+  id: elastic-co
+  name: elastic
+  hosts: ["https://www.elastic.co"]
+  schedule: '@every 10s'
+  mode: all
+- type: http
+  id: andrewvc-com
+  urls: ["http://blog.andrewvc.com"]
+  schedule: '@every 10s'
+  mode: all
+- type: http
+  id: secure-avc
+  urls: ["https://blog.andrewvc.com"]
+  schedule: '@every 10s'
+  mode: all
+- type: http
+  id: bad-ssl
+  urls: ["https://expired.badssl.com"]
+  schedule: '@every 10s'
+  mode: all 
+- type: http
+  id: kibana-local
+  urls: ["http://localhost:5601/"]
+  schedule: '@every 5s'
+  mode: all 
+- type: http
+  id: google
+  urls: ["https://google.com/"]
+  schedule: '@every 5s'
+  mode: all  
+- type: http
+  id: linkedin
+  urls: ["https://linkedin.com/"]
+  schedule: '@every 5s'
+  mode: all
+- type: http
+  id: facebook
+  urls: ["https://fb.com/"]
+  schedule: '@every 5s'
+  mode: all
+- type: http
+  id: youtube
+  urls: ["https://youtube.com/"]
+  schedule: '@every 5s'
+  mode: all
+processors:
+  - add_observer_metadata: 
+      geo: 
+        name: "${GEO_NAME}"
+        location: "37.926868, -78.024902"
+  
 
 #==================== Elasticsearch template setting ==========================
 
@@ -79,11 +126,11 @@ setup.kibana:
 # The cloud.id setting overwrites the `output.elasticsearch.hosts` and
 # `setup.kibana.host` options.
 # You can find the `cloud.id` in the Elastic Cloud web UI.
-#cloud.id:
+# cloud.id: Test_750:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGU1ODk4NzBlYjE2MjRmN2VhNjI5MTgxYzI3Y2E3YWU2JGJlOTE1MjdjMWIyYzQzMWQ5MjAzNGYwYzNmZDkyMjNk
 
 # The cloud.auth setting overwrites the `output.elasticsearch.username` and
 # `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
-#cloud.auth:
+# cloud.auth: elastic:g0LStgHnBM3rmODZQmRFkRXc
 
 #================================ Outputs =====================================
 
@@ -115,9 +162,6 @@ output.elasticsearch:
   #ssl.key: "/etc/pki/client/cert.key"
 
 #================================ Processors =====================================
-
-processors:
-  - add_observer_metadata:
   # Optional, but recommended geo settings for the location Heartbeat is running in
   #geo:
     # Token describing this location
